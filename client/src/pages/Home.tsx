@@ -1,17 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ArrowRight, Check, TrendingUp, BarChart3, DollarSign, Target, Calendar, Clock } from "lucide-react";
+import { ArrowRight, Check, BarChart3, DollarSign, Target, Clock } from "lucide-react";
 import { useState } from "react";
 import { useLocation } from "wouter";
 import { blogArticles } from "@/data/blog";
 import ProfitCalculator from "@/components/ProfitCalculator";
-
-/**
- * MJ Gestão - Home Page
- * Design: Modern Minimalist + Data-Driven
- * Color Palette: Azul profundo (#0F3A7D), Verde menta (#10B981), Laranja (#F97316)
- * Typography: Poppins Bold (headlines), Inter Regular (body)
- */
 
 export default function Home() {
   const [, setLocation] = useLocation();
@@ -22,30 +15,63 @@ export default function Home() {
     dificuldade: "",
   });
 
-  const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+  const handleFormChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleDiagnosticoClick = (label: string) => {
+    if (typeof window !== "undefined" && (window as any).gtag) {
+      (window as any).gtag("event", "diagnostico_click", {
+        event_category: "Lead",
+        event_label: label,
+      });
+    }
+
+    setLocation("/diagnostico");
+  };
+
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Aqui você poderia enviar os dados para um backend
+
+    if (typeof window !== "undefined" && (window as any).gtag) {
+      (window as any).gtag("event", "form_submit", {
+        event_category: "Lead",
+        event_label: "Formulário Home",
+        especialidade: formData.especialidade,
+        faturamento: formData.faturamento,
+      });
+    }
+
     console.log("Lead capturado:", formData);
+
     alert("Obrigado! Em breve entraremos em contato para agendar seu diagnóstico financeiro.");
-    setFormData({ nome: "", especialidade: "", faturamento: "", dificuldade: "" });
+
+    setFormData({
+      nome: "",
+      especialidade: "",
+      faturamento: "",
+      dificuldade: "",
+    });
   };
 
   return (
     <div className="min-h-screen bg-white">
-      {/* HEADER */}
       <header className="sticky top-0 z-50 bg-white border-b border-gray-100 shadow-soft">
         <div className="container flex items-center justify-between py-4">
           <div className="flex items-center gap-2">
             <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-700 to-emerald-500 flex items-center justify-center">
-              <span className="text-white font-bold text-lg" style={{fontFamily: "'Poppins', sans-serif"}}>MJ</span>
+              <span className="text-white font-bold text-lg" style={{ fontFamily: "'Poppins', sans-serif" }}>
+                MJ
+              </span>
             </div>
-            <span className="font-bold text-xl text-gray-900" style={{fontFamily: "'Poppins', sans-serif"}}>MJ Gestão</span>
+            <span className="font-bold text-xl text-gray-900" style={{ fontFamily: "'Poppins', sans-serif" }}>
+              MJ Gestão
+            </span>
           </div>
+
           <nav className="hidden md:flex items-center gap-8">
             <a href="#servicos" className="text-gray-600 hover:text-blue-700 transition-colors">
               Serviços
@@ -60,7 +86,7 @@ export default function Home() {
               Blog
             </a>
             <Button
-              onClick={() => setLocation("/diagnostico")}
+              onClick={() => handleDiagnosticoClick("Menu - Diagnóstico Financeiro")}
               className="bg-blue-700 hover:bg-blue-800 text-white"
             >
               Diagnóstico Financeiro
@@ -69,12 +95,10 @@ export default function Home() {
         </div>
       </header>
 
-      {/* HERO SECTION */}
       <section className="relative overflow-hidden bg-white pt-20 pb-32 md:pt-32 md:pb-48">
         <div className="container grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-          {/* Texto Hero */}
           <div className="space-y-6 animate-fade-in">
-            <h1 className="font-bold text-5xl md:text-6xl text-gray-900 leading-tight" style={{fontFamily: "'Poppins', sans-serif"}}>
+            <h1 className="font-bold text-5xl md:text-6xl text-gray-900 leading-tight" style={{ fontFamily: "'Poppins', sans-serif" }}>
               Transforme o faturamento da sua clínica em <span className="gradient-blue-green-text">lucro real</span>
             </h1>
             <p className="text-xl text-gray-600 leading-relaxed">
@@ -82,14 +106,16 @@ export default function Home() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 pt-4">
               <Button
-                onClick={() => setLocation("/diagnostico")}
+                onClick={() => handleDiagnosticoClick("Hero - Quero meu diagnóstico financeiro")}
                 className="bg-blue-700 hover:bg-blue-800 text-white text-lg px-8 py-6 rounded-lg font-semibold flex items-center gap-2"
               >
                 Quero meu diagnóstico financeiro
                 <ArrowRight className="w-5 h-5" />
               </Button>
+
               <Button
                 variant="outline"
+                onClick={() => handleDiagnosticoClick("Hero - Falar com especialista")}
                 className="border-2 border-blue-700 text-blue-700 hover:bg-blue-50 text-lg px-8 py-6 rounded-lg font-semibold"
               >
                 Falar com especialista
@@ -97,7 +123,6 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Imagem Hero */}
           <div className="relative h-96 md:h-full min-h-96 rounded-2xl overflow-hidden shadow-lg-soft">
             <img
               src="https://d2xsxph8kpxj0f.cloudfront.net/310519663344076272/k54SQbNSkb4ScMVTVTtX8h/hero-clinica-crescimento-G4EvmXZyvzm5V3jEWfbTLB.webp"
@@ -108,11 +133,10 @@ export default function Home() {
         </div>
       </section>
 
-      {/* SEÇÃO DE DORES */}
       <section className="py-20 md:py-32 bg-gray-50">
         <div className="container">
           <div className="max-w-3xl mx-auto text-center mb-16">
-            <h2 className="font-bold text-4xl md:text-5xl text-gray-900 mb-6" style={{fontFamily: "'Poppins', sans-serif"}}>
+            <h2 className="font-bold text-4xl md:text-5xl text-gray-900 mb-6" style={{ fontFamily: "'Poppins', sans-serif" }}>
               Sua clínica poderia ser mais lucrativa — mas algo está travando isso
             </h2>
             <p className="text-lg text-gray-600">
@@ -122,22 +146,10 @@ export default function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {[
-              {
-                icon: "💰",
-                title: "Você fatura bem, mas não sabe quanto realmente sobra?",
-              },
-              {
-                icon: "📊",
-                title: "O dinheiro entra, mas parece que nunca acumula?",
-              },
-              {
-                icon: "🔍",
-                title: "Você não tem clareza sobre seus custos e margens?",
-              },
-              {
-                icon: "❓",
-                title: "Sua precificação foi definida no 'achismo'?",
-              },
+              { icon: "💰", title: "Você fatura bem, mas não sabe quanto realmente sobra?" },
+              { icon: "📊", title: "O dinheiro entra, mas parece que nunca acumula?" },
+              { icon: "🔍", title: "Você não tem clareza sobre seus custos e margens?" },
+              { icon: "❓", title: "Sua precificação foi definida no 'achismo'?" },
             ].map((item, idx) => (
               <Card key={idx} className="p-8 bg-white border border-gray-200 hover:shadow-medium transition-shadow">
                 <div className="text-4xl mb-4">{item.icon}</div>
@@ -148,11 +160,10 @@ export default function Home() {
         </div>
       </section>
 
-      {/* SEÇÃO DE SOLUÇÃO */}
       <section id="servicos" className="py-20 md:py-32 bg-white">
         <div className="container">
           <div className="max-w-3xl mx-auto text-center mb-16">
-            <h2 className="font-bold text-4xl md:text-5xl text-gray-900 mb-6" style={{fontFamily: "'Poppins', sans-serif"}}>
+            <h2 className="font-bold text-4xl md:text-5xl text-gray-900 mb-6" style={{ fontFamily: "'Poppins', sans-serif" }}>
               A gestão financeira que sua clínica precisa para crescer com segurança
             </h2>
             <p className="text-lg text-gray-600">
@@ -165,32 +176,17 @@ export default function Home() {
               {
                 title: "Consultoria Financeira",
                 icon: Target,
-                items: [
-                  "Diagnóstico financeiro",
-                  "Identificação de falhas",
-                  "Plano de ação estratégico",
-                  "Acompanhamento",
-                ],
+                items: ["Diagnóstico financeiro", "Identificação de falhas", "Plano de ação estratégico", "Acompanhamento"],
               },
               {
                 title: "Controladoria & Precificação",
                 icon: BarChart3,
-                items: [
-                  "Estruturação de lucro",
-                  "Precificação de consultas e procedimentos",
-                  "Análise de margens",
-                  "Decisão baseada em dados",
-                ],
+                items: ["Estruturação de lucro", "Precificação de consultas e procedimentos", "Análise de margens", "Decisão baseada em dados"],
               },
               {
                 title: "BPO Financeiro",
                 icon: DollarSign,
-                items: [
-                  "Gestão completa do financeiro",
-                  "Contas a pagar e receber",
-                  "Conciliação bancária",
-                  "Relatórios mensais",
-                ],
+                items: ["Gestão completa do financeiro", "Contas a pagar e receber", "Conciliação bancária", "Relatórios mensais"],
               },
             ].map((service, idx) => {
               const IconComponent = service.icon;
@@ -199,7 +195,9 @@ export default function Home() {
                   <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-700 to-emerald-500 flex items-center justify-center mb-6">
                     <IconComponent className="w-6 h-6 text-white" />
                   </div>
-                  <h3 className="font-bold text-xl text-gray-900 mb-6" style={{fontFamily: "'Poppins', sans-serif"}}>{service.title}</h3>
+                  <h3 className="font-bold text-xl text-gray-900 mb-6" style={{ fontFamily: "'Poppins', sans-serif" }}>
+                    {service.title}
+                  </h3>
                   <ul className="space-y-3">
                     {service.items.map((item, itemIdx) => (
                       <li key={itemIdx} className="flex items-start gap-3">
@@ -215,22 +213,15 @@ export default function Home() {
         </div>
       </section>
 
-      {/* SEÇÃO DE DIFERENCIAIS */}
       <section id="diferenciais" className="py-20 md:py-32 bg-gray-50">
         <div className="container">
-          <h2 className="font-bold text-4xl md:text-5xl text-gray-900 mb-16 text-center" style={{fontFamily: "'Poppins', sans-serif"}}>
+          <h2 className="font-bold text-4xl md:text-5xl text-gray-900 mb-16 text-center" style={{ fontFamily: "'Poppins', sans-serif" }}>
             Por que clínicas escolhem a MJ Gestão?
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             <div className="space-y-6">
-              {[
-                "Especialização em clínicas médicas",
-                "Expertise em precificação",
-                "Atendimento personalizado",
-                "Visão estratégica",
-                "Clareza total dos números",
-              ].map((item, idx) => (
+              {["Especialização em clínicas médicas", "Expertise em precificação", "Atendimento personalizado", "Visão estratégica", "Clareza total dos números"].map((item, idx) => (
                 <div key={idx} className="flex items-start gap-4">
                   <div className="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center flex-shrink-0 mt-1">
                     <Check className="w-5 h-5 text-white" />
@@ -251,10 +242,9 @@ export default function Home() {
         </div>
       </section>
 
-      {/* SEÇÃO COMO FUNCIONA */}
       <section id="como-funciona" className="py-20 md:py-32 bg-white">
         <div className="container">
-          <h2 className="font-bold text-4xl md:text-5xl text-gray-900 mb-6 text-center" style={{fontFamily: "'Poppins', sans-serif"}}>
+          <h2 className="font-bold text-4xl md:text-5xl text-gray-900 mb-6 text-center" style={{ fontFamily: "'Poppins', sans-serif" }}>
             Simples, rápido e estratégico
           </h2>
           <p className="text-lg text-gray-600 text-center mb-16 max-w-2xl mx-auto">
@@ -269,29 +259,29 @@ export default function Home() {
               { step: 4, title: "Acompanhamos sua evolução", desc: "Continuamos ao seu lado para garantir os resultados" },
             ].map((item, idx) => (
               <div key={idx} className="relative">
-                <div className="bg-blue-700 text-white w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg mb-4" style={{fontFamily: "'Poppins', sans-serif"}}>
+                <div className="bg-blue-700 text-white w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg mb-4" style={{ fontFamily: "'Poppins', sans-serif" }}>
                   {item.step}
                 </div>
-                <h3 className="font-bold text-lg text-gray-900 mb-2" style={{fontFamily: "'Poppins', sans-serif"}}>{item.title}</h3>
+                <h3 className="font-bold text-lg text-gray-900 mb-2" style={{ fontFamily: "'Poppins', sans-serif" }}>
+                  {item.title}
+                </h3>
                 <p className="text-gray-600">{item.desc}</p>
-                {idx < 3 && (
-                  <div className="hidden md:block absolute top-6 -right-3 text-blue-700 text-2xl">→</div>
-                )}
+                {idx < 3 && <div className="hidden md:block absolute top-6 -right-3 text-blue-700 text-2xl">→</div>}
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* SEÇÃO AUTORIDADE */}
       <section className="py-20 md:py-32 bg-gradient-to-br from-blue-700 via-blue-600 to-emerald-500 text-white">
         <div className="container text-center">
-          <h2 className="font-bold text-4xl md:text-5xl mb-6" style={{fontFamily: "'Poppins', sans-serif"}}>
+          <h2 className="font-bold text-4xl md:text-5xl mb-6" style={{ fontFamily: "'Poppins', sans-serif" }}>
             Experiência que gera resultado
           </h2>
           <p className="text-xl text-blue-100 max-w-2xl mx-auto mb-12">
             Com mais de 8 anos de atuação, ajudamos clínicas a organizar o financeiro, aumentar o lucro e tomar decisões com segurança.
           </p>
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
             {[
               { number: "100+", label: "Clínicas atendidas" },
@@ -299,7 +289,9 @@ export default function Home() {
               { number: "R$ 50M+", label: "Em lucro gerado" },
             ].map((stat, idx) => (
               <div key={idx} className="animate-count-up">
-                <p className="font-bold text-4xl md:text-5xl mb-2" style={{fontFamily: "'Poppins', sans-serif"}}>{stat.number}</p>
+                <p className="font-bold text-4xl md:text-5xl mb-2" style={{ fontFamily: "'Poppins', sans-serif" }}>
+                  {stat.number}
+                </p>
                 <p className="text-blue-100 text-lg">{stat.label}</p>
               </div>
             ))}
@@ -307,19 +299,20 @@ export default function Home() {
         </div>
       </section>
 
-      {/* SEÇÃO CTA FINAL */}
       <section className="py-20 md:py-32 bg-white">
         <div className="container">
           <div className="max-w-2xl mx-auto text-center">
-            <h2 className="font-bold text-4xl md:text-5xl text-gray-900 mb-6" style={{fontFamily: "'Poppins', sans-serif"}}>
+            <h2 className="font-bold text-4xl md:text-5xl text-gray-900 mb-6" style={{ fontFamily: "'Poppins', sans-serif" }}>
               Sua clínica pode ser muito mais lucrativa com organização
             </h2>
             <p className="text-2xl text-gray-600 mb-8">
-              Você não precisa faturar mais para lucrar mais.<br />
+              Você não precisa faturar mais para lucrar mais.
+              <br />
               <span className="font-semibold">Você precisa de gestão.</span>
             </p>
+
             <Button
-              onClick={() => setLocation("/diagnostico")}
+              onClick={() => handleDiagnosticoClick("CTA Final - Quero organizar minha clínica agora")}
               className="bg-blue-700 hover:bg-blue-800 text-white text-lg px-10 py-6 rounded-lg font-semibold inline-flex items-center gap-2"
             >
               Quero organizar minha clínica agora
@@ -329,11 +322,10 @@ export default function Home() {
         </div>
       </section>
 
-      {/* SEÇÃO FORMULÁRIO */}
       <section className="py-20 md:py-32 bg-gray-50">
         <div className="container">
           <div className="max-w-2xl mx-auto">
-            <h2 className="font-bold text-4xl md:text-5xl text-gray-900 mb-4 text-center" style={{fontFamily: "'Poppins', sans-serif"}}>
+            <h2 className="font-bold text-4xl md:text-5xl text-gray-900 mb-4 text-center" style={{ fontFamily: "'Poppins', sans-serif" }}>
               Gere seu diagnóstico financeiro
             </h2>
             <p className="text-lg text-gray-600 text-center mb-12">
@@ -343,9 +335,7 @@ export default function Home() {
             <Card className="p-8 md:p-12 bg-white border border-gray-200">
               <form onSubmit={handleFormSubmit} className="space-y-6">
                 <div>
-                  <label className="block text-sm font-semibold text-gray-900 mb-2">
-                    Nome completo *
-                  </label>
+                  <label className="block text-sm font-semibold text-gray-900 mb-2">Nome completo *</label>
                   <input
                     type="text"
                     name="nome"
@@ -358,9 +348,7 @@ export default function Home() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-gray-900 mb-2">
-                    Especialidade *
-                  </label>
+                  <label className="block text-sm font-semibold text-gray-900 mb-2">Especialidade *</label>
                   <select
                     name="especialidade"
                     value={formData.especialidade}
@@ -378,9 +366,7 @@ export default function Home() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-gray-900 mb-2">
-                    Faturamento mensal aproximado *
-                  </label>
+                  <label className="block text-sm font-semibold text-gray-900 mb-2">Faturamento mensal aproximado *</label>
                   <select
                     name="faturamento"
                     value={formData.faturamento}
@@ -398,9 +384,7 @@ export default function Home() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-gray-900 mb-2">
-                    Principal dificuldade financeira *
-                  </label>
+                  <label className="block text-sm font-semibold text-gray-900 mb-2">Principal dificuldade financeira *</label>
                   <textarea
                     name="dificuldade"
                     value={formData.dificuldade}
@@ -424,11 +408,10 @@ export default function Home() {
         </div>
       </section>
 
-      {/* SEÇÃO DE BLOG */}
       <section className="py-20 md:py-32 bg-gray-50">
         <div className="container">
           <div className="max-w-3xl mx-auto text-center mb-16">
-            <h2 className="font-bold text-4xl md:text-5xl text-gray-900 mb-6" style={{fontFamily: "'Poppins', sans-serif"}}>
+            <h2 className="font-bold text-4xl md:text-5xl text-gray-900 mb-6" style={{ fontFamily: "'Poppins', sans-serif" }}>
               Insights sobre Gestão Financeira
             </h2>
             <p className="text-lg text-gray-600">
@@ -451,12 +434,10 @@ export default function Home() {
                   />
                 </div>
                 <div className="p-6">
-                  <h3 className="font-bold text-lg text-gray-900 mb-3 line-clamp-2 group-hover:text-blue-700 transition-colors" style={{fontFamily: "'Poppins', sans-serif"}}>
+                  <h3 className="font-bold text-lg text-gray-900 mb-3 line-clamp-2 group-hover:text-blue-700 transition-colors" style={{ fontFamily: "'Poppins', sans-serif" }}>
                     {article.title}
                   </h3>
-                  <p className="text-gray-600 text-sm mb-4 line-clamp-2">
-                    {article.excerpt}
-                  </p>
+                  <p className="text-gray-600 text-sm mb-4 line-clamp-2">{article.excerpt}</p>
                   <div className="flex items-center justify-between text-xs text-gray-500">
                     <div className="flex items-center gap-1">
                       <Clock className="w-3 h-3" />
@@ -481,18 +462,16 @@ export default function Home() {
         </div>
       </section>
 
-      {/* SEÇÃO CALCULADORA DE LUCRO */}
       <section className="py-20 md:py-32 bg-gray-50">
         <div className="container">
           <ProfitCalculator />
         </div>
       </section>
 
-      {/* SEÇÃO FAQ */}
       <section className="py-20 md:py-32 bg-white">
         <div className="container">
           <div className="max-w-3xl mx-auto text-center mb-16">
-            <h2 className="font-bold text-4xl md:text-5xl text-gray-900 mb-6" style={{fontFamily: "'Poppins', sans-serif"}}>
+            <h2 className="font-bold text-4xl md:text-5xl text-gray-900 mb-6" style={{ fontFamily: "'Poppins', sans-serif" }}>
               Dúvidas Frequentes
             </h2>
             <p className="text-lg text-gray-600">
@@ -536,7 +515,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* FOOTER */}
       <footer className="bg-gray-900 text-gray-400 py-12">
         <div className="container">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
@@ -549,6 +527,7 @@ export default function Home() {
               </div>
               <p className="text-sm">BPO Financeiro para Clínicas Médicas</p>
             </div>
+
             <div>
               <h4 className="font-semibold text-white mb-4">Serviços</h4>
               <ul className="space-y-2 text-sm">
@@ -557,6 +536,7 @@ export default function Home() {
                 <li><a href="#" className="hover:text-white transition-colors">Controladoria</a></li>
               </ul>
             </div>
+
             <div>
               <h4 className="font-semibold text-white mb-4">Empresa</h4>
               <ul className="space-y-2 text-sm">
@@ -565,6 +545,7 @@ export default function Home() {
                 <li><a href="#" className="hover:text-white transition-colors">Contato</a></li>
               </ul>
             </div>
+
             <div>
               <h4 className="font-semibold text-white mb-4">Legal</h4>
               <ul className="space-y-2 text-sm">
@@ -573,6 +554,7 @@ export default function Home() {
               </ul>
             </div>
           </div>
+
           <div className="border-t border-gray-800 pt-8 text-center text-sm">
             <p>&copy; 2024 MJ Gestão. Todos os direitos reservados.</p>
           </div>

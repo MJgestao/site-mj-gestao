@@ -5,11 +5,21 @@ export default function WhatsAppButton() {
   const message = "Olá! Gostaria de saber mais sobre os serviços da MJ Gestão.";
   const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
 
+  const handleWhatsAppClick = () => {
+    if (typeof window !== "undefined" && (window as any).gtag) {
+      (window as any).gtag("event", "whatsapp_click", {
+        event_category: "Contato",
+        event_label: "Botão WhatsApp Flutuante",
+      });
+    }
+  };
+
   return (
     <a
       href={whatsappUrl}
       target="_blank"
       rel="noopener noreferrer"
+      onClick={handleWhatsAppClick}
       className="fixed bottom-8 right-8 z-40 w-14 h-14 bg-emerald-500 hover:bg-emerald-600 text-white rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 animate-bounce-soft"
       title="Fale conosco no WhatsApp"
     >
